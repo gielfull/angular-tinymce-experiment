@@ -1,0 +1,15 @@
+<link href="https://cdn.quilljs.com/1.2.2/quill.snow.css" rel="stylesheet">
+
+<hello name="{{ name }}"></hello>
+<p>
+	Start editing to see some magic happen :)
+</p>
+
+<editor
+  [ngModel]="fieldValue"
+  [init]="initObject"
+  (onInit)="angularInit()"
+  (onSetContent)="angularSetContent()"
+></editor>
+
+<!-- <quill-editor id="editor"></quill-editor> -->
