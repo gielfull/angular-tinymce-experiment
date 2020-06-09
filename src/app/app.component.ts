@@ -11,20 +11,39 @@ export class AppComponent  {
   name = 'Angular ' + VERSION.major;
   public apiKey = "";
   public fieldValue = 'some value';
+  public tinymceEditor;
+  public tinyId;
+  public contentText;
   public initObject = {
-    height: 500,
+    init_instance_callback : function(editor) {
+      this.tinymceEditor = editor;
+      this.tinyId = editor.id;
+      console.log("Editor: " + editor.id + " is now initialized.");
+    },
+    height: 300,
+    menubar: false,
+    plugins: "media image link lists wordcount preview ",
     toolbar: "undo redo | formatselect | bold italic backcolor | \
-       alignleft aligncenter alignright alignjustify | \
-       bullist numlist outdent indent | removeformat | myCustomToolbarButton ",
+      image | media | cbBusinessName | cbBusinessWebsite ",
     setup: (editor: any) => {
       editor.on('SetContent', (e: any) => this.tinySetContent());
       editor.on('Init', () => this.tinyInit());
-      editor.ui.registry.addButton('myCustomToolbarButton', {
-      text: 'Business Name',
-      onAction: () => {
-        editor.insertContent('{{business_name}}');
-      }
-    });
+      editor.ui.registry.addButton('cbBusinessName', {
+        text: 'Business Name',
+        onAction: () => {
+          editor.insertContent('{{business_name}}');
+        }
+      });
+      editor.ui.registry.addButton('cbBusinessWebsite', {
+        text: 'Business WebSite',
+        onAction: () => {
+          editor.insertContent('{{business_web}}');
+        }
+      });
+      editor.on('KeyUp', (e, l) => {
+		      console.log(editor.getContent());
+          // this.content = editor.getContent();
+		  });
     }
   };
 
@@ -42,5 +61,11 @@ export class AppComponent  {
 
   public angularInit() {
     console.log('init by angular');
+  }
+
+  public export() {
+    // alert("Exported content");
+    // alert(this.tinymceEditor.getContent({ format: "text" }));
+    console.log(this.contentText);
   }
 }

@@ -1,8 +1,6 @@
 <link href="https://cdn.quilljs.com/1.2.2/quill.snow.css" rel="stylesheet">
-
-<hello name="{{ name }}"></hello>
 <p>
-	Start editing to see some magic happen :)
+	TinyMCE Experiment at Erevu HQ
 </p>
 
 <editor
@@ -11,5 +9,7 @@
   (onInit)="angularInit()"
   (onSetContent)="angularSetContent()"
 ></editor>
+
+<button id="export" style="margin-top: 30px;" (click)="export()">Export Content</button>
 
 <!-- <quill-editor id="editor"></quill-editor> -->
