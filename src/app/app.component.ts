@@ -20,9 +20,9 @@ export class AppComponent  {
       editor.on('SetContent', (e: any) => this.tinySetContent());
       editor.on('Init', () => this.tinyInit());
       editor.ui.registry.addButton('myCustomToolbarButton', {
-      text: 'My Custom Button',
+      text: 'Business Name',
       onAction: () => {
-        editor.insertContent('&nbsp;<strong>It\'s my button!</strong>&nbsp;');
+        editor.insertContent('{{business_name}}');
       }
     });
     }
