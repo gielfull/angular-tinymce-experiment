@@ -7,7 +7,7 @@ import { HelloComponent } from './hello.component';
 
 import { QuillModule } from 'ngx-quill';
 
-import { EditorModule } from '@tinymce/tinymce-angular';
+import { EditorModule, TINYMCE_SCRIPT_SRC  } from '@tinymce/tinymce-angular';
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, EditorModule, QuillModule.forRoot() ],

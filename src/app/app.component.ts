@@ -10,7 +10,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 export class AppComponent  {
   name = 'Angular ' + VERSION.major;
   public apiKey = "";
-  public fieldValue = 'some value';
+  public fieldValue = 'Write your letter here';
   public tinymceEditor;
   public tinyId;
   public contentText;
@@ -22,9 +22,13 @@ export class AppComponent  {
     },
     height: 300,
     menubar: false,
-    plugins: "media image link lists wordcount preview ",
+    plugins: [
+       'fullscreen advlist autolink lists charmap print preview anchor',
+       'searchreplace visualblocks code fullscreen wordcount',
+       'image link media code'
+     ],
     toolbar: "undo redo | formatselect | bold italic backcolor | \
-      image | media | cbBusinessName | cbBusinessWebsite ",
+      image | cbBusinessName | cbBusinessWebsite ",
     setup: (editor: any) => {
       editor.on('SetContent', (e: any) => this.tinySetContent());
       editor.on('Init', () => this.tinyInit());
@@ -40,9 +44,9 @@ export class AppComponent  {
           editor.insertContent('{{business_web}}');
         }
       });
-      editor.on('KeyUp', (e, l) => {
+      editor.on('Change', (e, l) => {
 		      console.log(editor.getContent());
-          // this.content = editor.getContent();
+          this.contentText = editor.getContent();
 		  });
     }
   };
@@ -66,6 +70,10 @@ export class AppComponent  {
   public export() {
     // alert("Exported content");
     // alert(this.tinymceEditor.getContent({ format: "text" }));
-    console.log(this.contentText);
+    if(this.contentText === undefined){
+      alert("You can't go to the nex step, before writting your letter first.");
+    }else{
+      console.log(this.contentText);
+    }
   }
 }
