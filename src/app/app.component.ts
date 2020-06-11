@@ -1,5 +1,7 @@
 import { Component, VERSION } from '@angular/core';
-import * as Quill from 'ngx-quill';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, retry } from 'rxjs/operators';
 import { EditorModule } from '@tinymce/tinymce-angular';
 
 @Component({
@@ -8,6 +10,9 @@ import { EditorModule } from '@tinymce/tinymce-angular';
   styleUrls: [ './app.component.css' ]
 })
 export class AppComponent  {
+
+  constructor(private http: HttpClient) { }
+
   name = 'Angular ' + VERSION.major;
   public apiKey = "";
   public fieldValue = 'Write your letter here';
@@ -49,17 +54,39 @@ export class AppComponent  {
           this.contentText = editor.getContent();
 		  });
     },
-     /* without images_upload_url set, Upload tab won't show up*/
-    images_upload_url: '',
-
-    /* we override default upload handler to simulate successful upload*/
+    images_upload_credentials: true,
     images_upload_handler: function (blobInfo, success, failure) {
-      setTimeout(function () {
-        /* no matter what you upload, we will turn it into TinyMCE logo :)*/
-        success('http://moxiecode.cachefly.net/tinymce/v9/images/logo.png');
-      }, 2000);
+      var xhr, formData;
+      xhr = new XMLHttpRequest();
+      xhr.withCredentials = false;
+      xhr.open('POST', 'https://api.imgur.com/3/upload');
+      xhr.setRequestHeader('Authorization', 'Client-ID 120d729222bea41')
+      xhr.onload = function() {
+        var json;
+
+        if (xhr.status != 200) {
+          failure('HTTP Error: ' + xhr.status);
+          return;
+        }
+        json = JSON.parse(xhr.responseText);
+
+        if (!json || typeof json.location != 'string') {
+          failure('Invalid JSON: ' + xhr.responseText);
+          return;
+        }
+        success(json.data.link);
+      };
+      formData = new FormData();
+      formData.append('file', blobInfo.blob(), blobInfo.filename());
+      xhr.send(formData);
     }
   };
+
+  // UploadImage(data: any) {
+  //   let headers = new Headers();
+  //   headers.append('Authorization', 'Client-ID 120d729222bea41');
+  //   return this.http.post("https://api.imgur.com/3/upload", data, headers);
+  // }
 
   public tinySetContent() {
     console.log('set by tiny');
@@ -78,8 +105,6 @@ export class AppComponent  {
   }
 
   public export() {
-    // alert("Exported content");
-    // alert(this.tinymceEditor.getContent({ format: "text" }));
     if(this.contentText === undefined){
       alert("You can't go to the nex step, before writting your letter first.");
     }else{
